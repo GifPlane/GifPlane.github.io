@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Free Bootstrap Themes by Html5xCss3 dot com - Free Responsive Html5 Templates">
+    <meta name="author" content="#">
+	
+    <title>WebGL | GifPlane </title>
+	
+    <!-- Bootstrap Core CSS -->
+    <link href="../css/bootstrap.min.css" rel="stylesheet" type="text/css">
+	<link href="../css/sidebar.css" rel="stylesheet" type="text/css">
+	<!-- Custom CSS -->
+	<link href="../css/style.css" rel="stylesheet">
+    <link href="../css/nav.css" rel="stylesheet">
+	
+	<!-- Custom Fonts -->
+    <link href="../font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+	
+	<!-- Owl Carousel Assets -->
+    <link href="../owl-carousel/owl.carousel.css" rel="stylesheet">
+    <!-- <link href="owl-carousel/owl.theme.css" rel="stylesheet"> -->
+
+	
+	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="js/html5shiv.js"></script>
+        <script src="js/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+    <header class="header navbar navbar-expand navbar-dark flex-column flex-md-row bd-navbar">
+        <ul class="navbar-nav bd-navbar-nav flex-row">
+            <li class="nav-item">
+                <a class="nav-link " href="http://seahandsome.coding.me/Algorithm/">Home</a>
+            </li>
+        </ul>
+    </header>
+
+    <div class="container-fluid">
+        <div class="row flex-xl-nowrap">
+           <div class="col-12 col-md-2 col-xl-2 bd-sidebar">
+                <div class="bd-toc-item">
+                        <a class="bd-toc-link" href="webgl01-trangle.html">1、绘制三角形</a>
+                </div>
+                <div class="bd-toc-item">
+                        <a class="bd-toc-link" href="webgl02-2D-Translation.html">2、2D平移01</a>
+                </div>
+                <div class="bd-toc-item">
+                        <a class="bd-toc-link" href="webgl02-2D-Translation02.html">3、2D平移02</a>
+                </div>
+                <div class="bd-toc-item">
+                        <a class="bd-toc-link" href="WebGL-2D-Scale.html">4、2D缩放</a>
+                </div>
+                <div class="bd-toc-item">
+                        <a class="bd-toc-link" href="WebGL-2D-Rotation.html">5、2D旋转01</a>
+                </div>
+                <div class="bd-toc-item">
+                        <a class="bd-toc-link" href="WebGL-2D-Rotation02.html">6、2D旋转02</a>
+                </div>
+                <div class="bd-toc-item">
+                        <a class="bd-toc-link" href="WebGL-2D-Matrix.html">7、2D矩阵</a>
+                </div>
+                <div class="bd-toc-item">
+                        <a class="bd-toc-link" href="WebGL-Orthographic-3D.html">8、3D正射视图01</a>
+                </div>
+                <div class="bd-toc-item">
+                        <a class="bd-toc-link" href="WebGL-Orthographic-3D02.html">9、3D正射视图02</a>
+                </div>
+                <div class="bd-toc-item">
+                        <a class="bd-toc-link" href="WebGL-Orthographic-3D03.html">10、3D正射视图03</a>
+                </div>
+                <div class="bd-toc-item">
+                        <a class="bd-toc-link" href="WebGL-3D-Perspective.html">11、3D透视视图</a>
+                </div>
+                <div class="bd-toc-item">
+                        <a class="bd-toc-link" href="WebGL-Camera.html">12、3D相机01</a>
+                </div>
+                <div class="bd-toc-item">
+                        <a class="bd-toc-link" href="WebGL-Camera02.html">13、3D相机02</a>
+                </div>
+                <div class="bd-toc-item">
+                        <a class="bd-toc-link" href="WebGL-Animation.html">14、3D动画</a>
+                </div>
+            </div>
+            <main class="col-12 col-md-10 col-xl-8 py-md-3 pl-md-5 bd-content">
+                <p>所有内容为我的学习和我的测试，均来自这个学习网站：<a href="https://webglfundamentals.org/webgl/lessons/">webglfundamentals</a></p>
+                <p>感谢该网站提供的教程！</p>
+            </main>
+        </div>
+        
+    </div>
+
+    
+<!-- jQuery and Plugin-->
+    <script src="../js/jquery-3.2.1.min.js"></script>
+    <script src="../js/main.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="../js/bootstrap.min.js"></script>
+    
+    <!-- Logo -->
+    <!-- carousel -->
+    <script src="../owl-carousel/owl.carousel.js"></script>
+    <script>
+        $(document).ready(function() {
+          var b2_box = $("#owl-slide");
+          
+          b2_box.owlCarousel({
+            autoPlay: false,
+            items : 1,
+            itemsDesktop : [1199,1],
+            itemsDesktopSmall : [979,1],
+            itemsTablet : [768, 1],
+            itemsMobile : [479, 1],
+            pagination: false
+          });
+          
+          // Custom Navigation Events 1
+          $(".next-b_2-slide").click(function(){
+            b2_box.trigger('owl.next');
+          });
+          $(".prev-b_2-slide").click(function(){
+            b2_box.trigger('owl.prev');
+          });
+          
+        });
+    </script>
+    
+    <script type="text/javascript" src="../js/validator.min.js"></script>
+    <script type="text/javascript" src="../js/form-scripts.js"></script>
+
+</body>
+</html>

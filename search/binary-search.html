@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>二分查找</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="GifPlane" content="#">
+  <link href="../css/bootstrap.min.css" rel="stylesheet" type="text/css">
+  <link href="../css/sidebar.css" rel="stylesheet" type="text/css">
+  <link href="../css/style.css" rel="stylesheet">
+  <link href="../css/nav.css" rel="stylesheet">
+  <link href="../font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+  <link href="../owl-carousel/owl.carousel.css" rel="stylesheet">
+  <style>
+      body {
+        font-family: Monospace;
+        background-color: #f0f0f0;
+        margin: 0px;
+        overflow: hidden;
+      }
+      #info {
+        font-family: 'Montserrat', sans-serif;
+        position: absolute;
+        top: 10px;
+        width: 100%;
+        text-align: center;
+        color:#ffffff;
+      }
+    </style>
+</head>
+<body>
+  <header class="header navbar navbar-expand navbar-dark flex-column flex-md-row bd-navbar">
+    <ul class="navbar-nav bd-navbar-nav flex-row">
+        <li class="nav-item">
+            <a class="nav-link " href="http://seahandsome.coding.me/Algorithm/">Home</a>
+        </li>
+    </ul>
+  </header>
+  <div id="info">
+    <p>二分查找在线演示</p>
+  </div>
+  <div class="container-fluid col-12">
+    <div class="col-md-3 col-xl-2 bd-sidebar">
+      <div>
+        <span class="font-weight-normal">输入需要排序的数组，以","为分隔符</span>
+        <input id="inputArray" type="text" class="form-control"/>
+        <span  class="font-weight-normal">输入需要查找的数</span>
+        <input id="searchNum" type="text" class="form-control"/>
+        <br/>
+        <div class="input-group-append" style="float:right;">
+          <button class="btn btn-outline-secondary" type="button" onclick="sure()">确认</button>
+        </div>
+      </div>
+    </div>
+     <div class="col-md-3 col-xl-2">
+      <div>
+        <div class="input-group-append">
+          <button class="btn btn-outline-secondary" type="button" onclick="search()">下一步</button>
+          <button class="btn btn-outline-secondary" type="button" onclick="reset()">重置</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+<script src="../js/Three.js"></script>
+<script src="../js/jquery-3.2.1.min.js"></script>
+
+<script type="text/javascript">
+  
+  var inputArray = new Array();
+
+  //点击确认按钮
+  function sure(){
+    var inputText = $("#inputArray").val();
+    inputArray = inputText.split(',');
+    var length_2 = ~~(inputArray.length/2);
+
+    for(var i=0;i<inputArray.length;++i){
+      number = new NumberBar(inputArray[i], Colors.yellow, Colors.blue);
+      number.mesh.position.x = -75 + i*25;
+      number.mesh.position.y = -5;
+      numberGroup.push(number);
+    }
+
+    seaNumber = $("#searchNum").val();
+
+    seaNumberObj = new NumberBar(seaNumber, Colors.blue, Colors.red);
+    seaNumberObj.mesh.position.x = numberGroup[length_2].mesh.position.x;
+    seaNumberObj.mesh.position.y = inputArray[length_2] * 10;
+
+    init();
+  }
+
+  var step = 0;
+
+  function search() {
+    if(step == 0) {
+      var length_2 = ~~(inputArray.length/2);
+
+      compareObj = new NumberBar(inputArray[length_2], Colors.brownDark, Colors.pink);
+      compareObj.mesh.position.x = numberGroup[length_2].mesh.position.x;
+      compareObj.mesh.position.y = numberGroup[length_2].mesh.position.y;
+
+      scene.add(compareObj.mesh);
+      ++step;
+    }else if(step == 1) {
+      isMove = true;  
+    }
+    
+
+
+
+   // isMove = true;
+  }
+
+</script>
+
+
+<!--演示-->
+<script type="text/javascript">
+  var SCREEN_WIDTH = window.innerWidth;
+  var SCREEN_HEIGHT = window.innerHeight;
+  var aspect = SCREEN_WIDTH / SCREEN_HEIGHT;
+
+  var camera, renderer, scene, container;
+
+  var moveSpeed = 0.01;
+  var deltaTime = 0;
+  var newTime =  new Date().getTime();
+  var oldTime =  new Date().getTime();
+
+  var isMove = false;
+  var isMoveAll = false;
+
+  var oldPosition; //移动前的位置
+
+  var numberGroup = []; //初始文字数组
+  var seaNumberObj;//搜索的文字对象
+  var compareObj;//用于比较的数字
+
+  var seaNumber; //搜索的文字,在input中获取
+
+  //定义用到的颜色
+  var Colors = {
+      red:0xf25346,
+      white:0xd8d0d1,
+      brown:0x59332e,
+      brownDark:0x23190f,
+      pink:0xF5986E,
+      yellow:0xf4ce93,
+      blue:0x68c3c0,
+  };
+  //定义Bar材质组
+  var BarMats = {
+    red: new THREE.MeshBasicMaterial({color:Colors.red,  flatShading:THREE.FlatShading}),
+    blue: new THREE.MeshBasicMaterial({color:Colors.blue,  flatShading:THREE.FlatShading}),
+  }
+  //定义Text材质组
+  var TextMats = {
+    red: new THREE.LineBasicMaterial( {color: Colors.red,transparent: true,side: THREE.DoubleSide}),
+    blue: new THREE.LineBasicMaterial( {color: Colors.blue,transparent: true,side: THREE.DoubleSide}),
+  }
+
+  var Font = new THREE.Font();
+  var loader = new THREE.FontLoader(); 
+
+  var isNew = true; // 是否是第一开始
+
+  //定义数字bar
+  var NumberBar = function(size, bColor, tColor) {
+
+    this.number = size;
+    this.mesh = new THREE.Object3D();
+    var numberMesh = this.mesh;
+    var textObj;
+
+    var geom = new THREE.BoxGeometry(5,size*5,0);
+    var mat = new THREE.MeshBasicMaterial({color:bColor,  flatShading:THREE.FlatShading});
+    var box = new THREE.Mesh(geom, mat);
+   
+    box.position.z = - 500; 
+    box.position.y = size*5 / 2;
+    this.mesh.add(box);
+
+    var textShape = new THREE.BufferGeometry();
+    var texMat = new THREE.LineBasicMaterial( {
+      color: tColor,
+      transparent: true,
+      side: THREE.DoubleSide
+    });
+
+    loader.load('../fonts/gentilis_regular.typeface.json',function(font){  
+
+      var shapes = font.generateShapes(size, 10, 1);
+      var texGeo = new THREE.ShapeGeometry(shapes);
+
+      texGeo.computeBoundingBox();
+
+      textShape.fromGeometry(texGeo);
+
+      textObj = new THREE.Mesh(textShape, texMat);
+      textObj.position.z = - 500;
+      textObj.position.y = box.position.y - size*5 / 2 - 10;
+      textObj.position.x = -5;
+
+      numberMesh.add(textObj);
+    });  
+  }
+
+  var number;
+
+
+  function init(){
+
+    if(isNew) {
+      scene = new THREE.Scene();
+      scene.background = new THREE.Color( 0xf0f0f0 );
+      scene.autoUpdate = true;
+
+      camera = new THREE.PerspectiveCamera(45, aspect, 1, 10000 );
+
+      scene.add(camera);
+      for(var i=0;i<numberGroup.length;++i){
+        scene.add(numberGroup[i].mesh);
+      }
+      scene.add(seaNumberObj.mesh);
+
+      renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+      renderer.setPixelRatio( window.devicePixelRatio );
+      renderer.setSize( SCREEN_WIDTH, SCREEN_HEIGHT);
+      renderer.domElement.style.position = "relative";
+      document.body.appendChild( renderer.domElement );
+
+      window.addEventListener( 'resize', onWindowResize, false );
+
+      isNew = false;
+
+      animate();
+    } else {
+      for(var i=0;i<numberGroup.length;++i){
+        scene.add(numberGroup[i].mesh);
+      }
+      scene.add(seaNumberObj.mesh);
+    }
+  }
+  var speed = deltaTime * moveSpeed;
+  var side = 0;
+  function animate() {
+
+    newTime = new Date().getTime();
+    deltaTime = newTime-oldTime;
+    oldTime = newTime;
+
+    if(isMove) {
+      if(step == 1) {
+        compareObj.mesh.position.x += deltaTime * moveSpeed;
+        compareObj.mesh.position.y += deltaTime * moveSpeed * 2;
+        if(compareObj.mesh.position.y >= seaNumberObj.mesh.position.y) {
+          moveSpeed = 0;
+          if(seaNumberObj.number > compareObj.number) {
+            for(var i=0;i<~~(numberGroup.length/2);++i){
+              scene.remove(numberGroup[i].mesh);
+            }
+
+            for(var i=0;i<~~(numberGroup.length/2);++i){
+              numberGroup.splice(0,1);
+            }
+
+            side = 1;
+
+          }else if(seaNumberObj.number < compareObj.number){
+            for(var i=~~(inputArray.length/2);i<inputArray.length;++i){
+              scene.remove(numberGroup[i].mesh);
+            }
+
+            for(var i=~~(inputArray.length/2);i<inputArray.length;++i){
+              numberGroup.splice(~~(inputArray.length/2),1);
+            }
+
+            side = 0;
+
+          }
+          scene.remove(compareObj.mesh);
+          console.log(numberGroup);
+          isMove = false;
+          isMoveAll = true;
+        }
+      }
+    }
+
+    if(isMoveAll) {
+      if(side == 0){
+        for(var i=0;i<numberGroup.length;++i){
+          numberGroup[i].mesh.position.x += deltaTime * 0.01;
+        }
+        if(numberGroup[~~(numberGroup.length/2)].mesh.position.x >= seaNumberObj.mesh.position.x) {
+          isMoveAll = false;
+        }
+      }else{
+        console.log("-1");
+        for(var i=0;i<numberGroup.length;++i){
+          numberGroup[i].mesh.position.x -= deltaTime * 0.01;
+        } 
+        if(numberGroup[~~(numberGroup.length/2)].mesh.position.x <= seaNumberObj.mesh.position.x) {
+          isMoveAll = false;
+        }
+      }
+    }
+    
+    requestAnimationFrame( animate );
+    render();
+  }
+
+
+  function render(){
+    renderer.setViewport(0, 0, window.innerWidth, window.innerHeight );
+    renderer.render( scene, camera );
+  }
+
+  function reset(){
+    for(var i=0;i<numberGroup.length;++i){
+        scene.remove(numberGroup[i].mesh);
+    }
+    scene.remove(seaNumberObj.mesh);
+    scene.remove(compareObj.mesh);
+    numberGroup = [];
+    seaNumberObj = null;
+    step = 0;
+    moveSpeed = 0.01;
+  }
+
+  function onWindowResize( event ) {
+
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+
+    renderer.setSize( window.innerWidth, window.innerHeight);
+  }
+
+ </script>
+</html>

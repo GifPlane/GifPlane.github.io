@@ -1,0 +1,157 @@
+<link rel="stylesheet" type="text/css" href="css/webgl01-trangle.css">
+<canvas id="canvas"></canvas>
+
+<script id="2d-vertex-shader" type="x-shader/x-vertex">
+	attribute vec2 a_position;
+	attribute vec2 a_texCoord;
+	
+	uniform vec2 u_resolution;
+
+	varying vec2 v_texCoord;
+
+	void main() {
+
+		vec2 zeroToOne = a_position / u_resolution;
+		vec2 zeroToTwo = zeroToOne * 2.0;
+		vec2 clipSpace = zeroToTwo - 1.0;
+
+		gl_Position = vec4(clipSpace * vec2(1,-1),0,1);
+
+		v_texCoord = a_texCoord;
+	}
+</script>
+
+<script id="2d-fragment-shader" type="x-shader/x-fragment">
+	precision mediump float;
+
+	uniform sampler2D u_image;
+
+	varying vec2 v_texCoord;
+
+	void main() {
+		gl_FragColor = texture2D(u_image, v_texCoord);
+	}
+
+</script>
+
+<script src="resources/webgl-utils.js"></script>
+<script src="js/shader.js"></script>
+
+<script type="text/javascript">
+	"use strict";
+	function main() {
+		var image = new Image();
+		//如果是在本地运行就需要这一项，因为默认情况下，浏览器不会加载本地图片
+		requestCORSIfNotSameOrigin(image, "https://webglfundamentals.org/webgl/resources/leaves.jpg")
+		image.src = "resources/leaves.jpg";
+		image.onload = function() {
+			render(image);
+		}
+	}
+
+	function render(image) {
+		var canvas = document.getElementById("canvas");
+		var gl = canvas.getContext("webgl");
+		if(!gl) return;
+
+		var program = shaderUtils.createProgramFromScripts(gl, ["2d-vertex-shader", "2d-fragment-shader"]); 
+		var positionLocation = gl.getAttribLocation(program, "a_position");
+		var texcoordLocation = gl.getAttribLocation(program, "a_texCoord");
+		var imageLocation = gl.getUniformLocation(program, "u_image");
+
+		var positionBuffer = gl.createBuffer();
+		gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+		setRectangle(gl, 0,0,image.width, image.height);
+
+		//创建纹理坐标缓冲，给矩形提供纹理坐标
+		var texcoordBuffer = gl.createBuffer();
+		gl.bindBuffer(gl.ARRAY_BUFFER, texcoordBuffer);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+			0.0,  0.0,
+      		1.0,  0.0,
+      		0.0,  1.0,
+      		0.0,  1.0,
+      		1.0,  0.0,
+      		1.0,  1.0,
+      	]),gl.STATIC_DRAW);
+
+		//加载图片
+      	var texture = gl.createTexture();
+      	gl.bindTexture(gl.TEXTURE_2D, texture); 
+      	//gl.uniform1f(imageLocation, 0);纹理单元默认为0，因此会自动把图片绑定到第0个纹理单元，所以u_image不需要设置
+
+      	//设置纹理参数，让我们可以绘制任何尺寸的图像
+      	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+		//将图像上传到纹理
+		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+
+		var resolutionLocation = gl.getUniformLocation(program, "u_resolution");
+
+		webglUtils.resizeCanvasToDisplaySize(gl.canvas);
+
+		gl.viewport(0,0,gl.canvas.width, gl.canvas.height);
+
+		gl.clearColor(0,0,0,0);
+		gl.clear(gl.COLOR_BUFFER_BIT);
+
+		gl.useProgram(program);
+
+		gl.enableVertexAttribArray(positionLocation);
+		gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+
+		var size = 2;          // 2 components per iteration
+		var type = gl.FLOAT;   // the data is 32bit floats
+		var normalize = false; // don't normalize the data
+		var stride = 0;        // 0 = move forward size * sizeof(type) each iteration to get the next position
+		var offset = 0;        // start at the beginning of the buffer
+		gl.vertexAttribPointer(
+		  positionLocation, size, type, normalize, stride, offset);
+
+		gl.enableVertexAttribArray(texcoordLocation);
+		gl.bindBuffer(gl.ARRAY_BUFFER, texcoordBuffer);
+
+		var size = 2;          // 2 components per iteration
+		var type = gl.FLOAT;   // the data is 32bit floats
+		var normalize = false; // don't normalize the data
+		var stride = 0;        // 0 = move forward size * sizeof(type) each iteration to get the next position
+		var offset = 0;        // start at the beginning of the buffer
+		gl.vertexAttribPointer(
+		  texcoordLocation, size, type, normalize, stride, offset);
+
+		gl.uniform2f(resolutionLocation, gl.canvas.width, gl.canvas.height);
+
+		// Draw the rectangle.
+		var primitiveType = gl.TRIANGLES;
+		var offset = 0;
+		var count = 6;
+		gl.drawArrays(primitiveType, offset, count);
+	}
+
+	function setRectangle(gl, x, y, width, height){
+		var x1 = x;
+		var x2 = x + width;
+		var y1 = y;
+		var y2 = y + height;
+
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+				 x1, y1,
+			     x2, y1,
+			     x1, y2,
+			     x1, y2,
+			     x2, y1,
+			     x2, y2,
+			]),gl.STATIC_DRAW);
+	}
+
+	function requestCORSIfNotSameOrigin(img, url) {
+	  if ((new URL(url)).origin !== window.location.origin) {
+	    img.crossOrigin = "";
+	  }
+	}
+
+	main();
+</script>
+

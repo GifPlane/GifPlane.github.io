@@ -1,0 +1,140 @@
+<link rel="stylesheet" type="text/css" href="css/webgl01-trangle.css">
+<canvas id="canvas"></canvas>
+<div id="uiContainer">
+  <div id="ui">
+    <div id="x"></div>
+    <div id="y"></div>
+  </div>
+</div>
+<!-- vertex shader -->
+<script id="2d-vertex-shader" type="x-shader/x-vertex">
+attribute vec2 a_position;
+
+uniform vec2 u_resolution;
+
+void main() {
+   // convert the rectangle points from pixels to 0.0 to 1.0
+   vec2 zeroToOne = a_position / u_resolution;
+
+   // convert from 0->1 to 0->2
+   vec2 zeroToTwo = zeroToOne * 2.0;
+
+   // convert from 0->2 to -1->+1 (clipspace)
+   vec2 clipSpace = zeroToTwo - 1.0;
+
+   gl_Position = vec4(clipSpace * vec2(1, -1), 0, 1); 
+}
+</script>
+<!-- fragment shader -->
+<script id="2d-fragment-shader" type="x-shader/x-fragment">
+precision mediump float;
+
+uniform vec4 u_color;
+
+void main() {
+   gl_FragColor = u_color;
+}
+</script>
+<script src="resources/webgl-utils.js"></script>
+<script src="resources/m3.js"></script>
+<script src="js/shader.js"></script>
+<script src="js/webglUtils-uiMy.js"></script>
+<script src="resources/webgl-lessons-helper.js"></script>
+
+<script type="text/javascript">
+	
+	"use strict";
+
+	function main() {
+		var canvas = document.getElementById("canvas");
+		var gl = canvas.getContext("webgl");
+		if(!gl) return;
+		var program = shaderUtils.createProgramFromScripts(gl, ["2d-vertex-shader", "2d-fragment-shader"]);
+
+		var positionLocation = gl.getAttribLocation(program, "a_position");
+
+		var resolutionLocation = gl.getUniformLocation(program, "u_resolution");
+		var colorLocation = gl.getUniformLocation(program,"u_color");
+
+		var positionBuffer = gl.createBuffer();
+		gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+
+		var translation = [0,0];
+		//width、height分别是矩形的宽和高
+		var width = 100;
+		var height = 30;
+		var color = [Math.random(), Math.random(), Math.random(), 1];
+
+		drawScene();
+
+		webglUtilsUI.setupSlider("#x", {slide: updatePosition(0), max: gl.canvas.width });
+		webglUtilsUI.setupSlider("#y", {slide: updatePosition(1), max: gl.canvas.height });
+
+		function updatePosition(index) {
+		    return function(event, ui) {
+		      translation[index] = ui.value;
+		      drawScene();
+		    }
+		}
+
+	
+		function drawScene(){
+			webglUtils.resizeCanvasToDisplaySize(gl.canvas);
+
+			gl.viewport(0,0,gl.canvas.width, gl.canvas.height);
+
+			gl.clear(gl.COLOR_BUFFER_BIT);
+
+			gl.useProgram(program);
+
+			gl.enableVertexAttribArray(positionLocation);
+			gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+
+			setRectangle(gl, translation[0], translation[1],width,height);
+
+			var size = 2;
+			var type = gl.FLOAT;
+			var normalize = false;
+			var stride = 0;
+			var offset = 0;
+			gl.vertexAttribPointer(
+				positionLocation, size, type, normalize, stride, offset);
+
+			// set the resolution
+		    gl.uniform2f(resolutionLocation, gl.canvas.width, gl.canvas.height);
+
+		    // set the color
+		    gl.uniform4fv(colorLocation, color);
+
+			var primitiveType = gl.TRIANGLES;
+			var offset = 0;
+			var count = 6;
+			gl.drawArrays(primitiveType, offset, count);
+
+		}
+	}
+
+	// Fill the buffer with the values that define a rectangle.
+	function setRectangle(gl, x, y, width, height) {
+	  var x1 = x;
+	  var x2 = x + width;
+	  var y1 = y;
+	  var y2 = y + height;
+
+	  gl.bufferData(
+	      gl.ARRAY_BUFFER,
+	      new Float32Array([
+	          x1, y1,
+	          x2, y1,
+	          x1, y2,
+	          x1, y2,
+	          x2, y1,
+	          x2, y2,
+	      ]),
+	      gl.STATIC_DRAW);
+	}
+
+
+	main();
+
+</script>

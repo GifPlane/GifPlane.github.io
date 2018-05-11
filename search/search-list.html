@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="#">
+	
+    <title>Algorithm | Algorithm demonstration</title>
+	
+    <!-- Bootstrap Core CSS -->
+    <link href="../css/bootstrap.min.css" rel="stylesheet" type="text/css">
+	<link href="../css/sidebar.css" rel="stylesheet" type="text/css">
+	<!-- Custom CSS -->
+	<link href="../css/style.css" rel="stylesheet">
+    <link href="../css/nav.css" rel="stylesheet">
+	
+	<!-- Custom Fonts -->
+    <link href="../font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+	
+	<!-- Owl Carousel Assets -->
+    <link href="../owl-carousel/owl.carousel.css" rel="stylesheet">
+    <!-- <link href="owl-carousel/owl.theme.css" rel="stylesheet"> -->
+</head>
+<body>
+    <header class="header navbar navbar-expand navbar-dark flex-column flex-md-row bd-navbar">
+        <ul class="navbar-nav bd-navbar-nav flex-row">
+            <li class="nav-item">
+                <a class="nav-link " href="http://seahandsome.coding.me/Algorithm/">Home</a>
+            </li>
+        </ul>
+    </header>
+
+    <div class="container-fluid">
+        <div class="row flex-xl-nowrap">
+           <div class="col-12 col-md-2 col-xl-2 bd-sidebar">
+                <div class="bd-toc-item">
+                        <a class="bd-toc-link" href="binary-search.html">binary-search</a>
+                </div>
+            </div>
+            <main class="col-12 col-md-10 col-xl-8 py-md-3 pl-md-5 bd-content">
+                <p>二分查找在线演示(开发中)</p>
+            </main>
+        </div>
+        
+    </div>
+
+    
+<!-- jQuery and Plugin-->
+    <script src="../js/jquery-3.2.1.min.js"></script>
+    <script src="../js/main.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="../js/bootstrap.min.js"></script>
+    
+    <!-- Logo -->
+    <!-- carousel -->
+    <script src="../owl-carousel/owl.carousel.js"></script>
+    <script>
+        $(document).ready(function() {
+          var b2_box = $("#owl-slide");
+          
+          b2_box.owlCarousel({
+            autoPlay: false,
+            items : 1,
+            itemsDesktop : [1199,1],
+            itemsDesktopSmall : [979,1],
+            itemsTablet : [768, 1],
+            itemsMobile : [479, 1],
+            pagination: false
+          });
+          
+          // Custom Navigation Events 1
+          $(".next-b_2-slide").click(function(){
+            b2_box.trigger('owl.next');
+          });
+          $(".prev-b_2-slide").click(function(){
+            b2_box.trigger('owl.prev');
+          });
+          
+        });
+    </script>
+    
+    <script type="text/javascript" src="../js/validator.min.js"></script>
+    <script type="text/javascript" src="../js/form-scripts.js"></script>
+
+</body>
+</html>

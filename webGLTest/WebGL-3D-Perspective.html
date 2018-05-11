@@ -1,0 +1,467 @@
+<link rel="stylesheet" type="text/css" href="css/webgl01-trangle.css">
+<canvas id="canvas"></canvas>
+<div id="uiContainer">
+  <div id="ui">
+    <div id="fieldOfView"></div>
+    <div id="x"></div>
+    <div id="y"></div>
+    <div id="z"></div>
+    <div id="angleX"></div>
+    <div id="angleY"></div>
+    <div id="angleZ"></div>
+    <div id="scaleX"></div>
+    <div id="scaleY"></div>
+    <div id="scaleZ"></div>
+  </div>
+</div>
+
+<script type="x-shader/x-vertex" id="3d-vertex-shader">
+    attribute vec4 a_position;
+    attribute vec4 a_color;
+
+    uniform mat4 u_matrix;
+
+    varying vec4 v_color;
+
+    void main() {
+        gl_Position = u_matrix * a_position;
+        v_color = a_color;
+    }
+</script>
+
+<script type="x-shader/x-fragment" id="3d-fragment-shader">
+    precision mediump float;
+
+    varying vec4 v_color;
+
+    void main() {
+        gl_FragColor = v_color;
+    }
+</script>
+
+<script src="resources/webgl-utils.js"></script>
+<script src="resources/m4.js"></script>
+<script src="js/shader.js"></script>
+<script src="js/webglUtils-uiMy.js"></script>
+<script src="resources/webgl-lessons-helper.js"></script>
+<script src="https://webglfundamentals.org/webgl/resources/jquery-1.7.1.min.js"></script>
+
+<script type="text/javascript">
+    
+    "use strict";
+
+    function main() {
+        var canvas = document.getElementById("canvas");
+        var gl = canvas.getContext("webgl");
+        if(!gl) {
+            alert("webgl loaded failed");
+            return;
+        }
+
+        var program = shaderUtils.createProgramFromScripts(gl, ["3d-vertex-shader", "3d-fragment-shader"]);
+
+        var positionLocation = gl.getAttribLocation(program, "a_position");
+
+        var colorLocation = gl.getAttribLocation(program, "a_color");
+
+        var matrixLocation = gl.getUniformLocation(program, "u_matrix");
+
+        var positionBuffer = gl.createBuffer();
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+
+        setGeometry(gl);
+
+        var colorBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+
+        setColor(gl);
+
+
+        function radToDeg(r) { //弧度转角度
+            return r * 180 / Math.PI;
+        }
+
+        function degToRad(d) { //角度转弧度
+            return d * Math.PI / 180;
+        }
+
+        var translation = [-150,0 ,-360];
+        var rotation = [degToRad(190), degToRad(40),degToRad(320)];
+        var scale = [1,1,1];
+        var fudgeFactor = 1;
+        var fieldOfViewRadians = degToRad(60);
+
+        drawScene();
+
+        webglUtilsUI.setupSlider("#fieldOfView", {value: radToDeg(fieldOfViewRadians), slide: updateFieldOfView, min: 1, max: 179});
+        webglUtilsUI.setupSlider("#x", {value: translation[0], slide: updatePosition(0), min: -200, max: 200 });
+        webglUtilsUI.setupSlider("#y", {value: translation[1], slide: updatePosition(1), min: -200, max: 200});
+        webglUtilsUI.setupSlider("#z", {value: translation[2], slide: updatePosition(2), min: -1000, max: 0});
+        webglUtilsUI.setupSlider("#angleX", {value: radToDeg(rotation[0]), slide: updateRotation(0), max: 360});
+        webglUtilsUI.setupSlider("#angleY", {value: radToDeg(rotation[1]), slide: updateRotation(1), max: 360});
+        webglUtilsUI.setupSlider("#angleZ", {value: radToDeg(rotation[2]), slide: updateRotation(2), max: 360});
+        webglUtilsUI.setupSlider("#scaleX", {value: scale[0], slide: updateScale(0), min: -5, max: 5, step: 0.01, precision: 2});
+        webglUtilsUI.setupSlider("#scaleY", {value: scale[1], slide: updateScale(1), min: -5, max: 5, step: 0.01, precision: 2});
+        webglUtilsUI.setupSlider("#scaleZ", {value: scale[2], slide: updateScale(2), min: -5, max: 5, step: 0.01, precision: 2});
+
+        function updateFieldOfView(event, ui) {
+          fieldOfViewRadians = degToRad(ui.value);
+          drawScene();
+        }
+
+        function updatePosition(index) {
+            return function(event, ui) {
+              translation[index] = ui.value;
+              drawScene();
+            }
+        }
+
+        function updateRotation(index) {
+            return function(event, ui) {
+              var angleInDegrees = ui.value;
+              var angleInRadians = angleInDegrees * Math.PI / 180;
+              rotation[index] = angleInRadians;
+              drawScene();
+            }
+        }
+
+        function updateScale(index) {
+            return function(event, ui) {
+              scale[index] = ui.value;
+              drawScene();
+            }
+        }
+
+        function drawScene() {
+            webglUtils.resizeCanvasToDisplaySize(gl.canvas);
+
+            gl.viewport(0,0,gl.canvas.width, gl.canvas.height);
+
+            gl.clear(gl.COLOR_BUFFER_BIT || gl.DEPTH_BUFFER_BIT);
+
+            gl.enable(gl.CULL_FACE);
+
+            // Enable the depth buffer
+            gl.enable(gl.DEPTH_TEST);
+
+            gl.useProgram(program);
+
+            gl.enableVertexAttribArray(positionLocation);
+
+            gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+
+            var size = 3;
+            var type = gl.FLOAT;
+            var normalize = false;
+            var stride = 0;
+            var offset = 0;
+
+            gl.vertexAttribPointer(positionLocation, size, type, normalize, stride, offset);
+
+            gl.enableVertexAttribArray(colorLocation);
+
+            gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+
+            var size= 3 ;
+            var type = gl.UNSIGNED_BYTE;
+            var normalize = true;
+            var stride = 0;
+            var offset = 0;
+            gl.vertexAttribPointer(colorLocation, size, type, normalize, stride, offset);
+
+            //透视投影
+            var aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
+            var zNear = 1;
+            var zFar = 2000;
+            var matrix = m4.perspective(fieldOfViewRadians, aspect, zNear, zFar);
+            matrix = m4.translate(matrix, translation[0],translation[1],translation[2]);
+            matrix = m4.xRotate(matrix, rotation[0]);
+            matrix = m4.yRotate(matrix, rotation[1]);
+            matrix = m4.zRotate(matrix, rotation[2]);
+            matrix = m4.scale(matrix, scale[0],scale[1],scale[2]);
+            //将matrix存入shader
+            gl.uniformMatrix4fv(matrixLocation,false,matrix);
+
+            var primitiveType = gl.TRIANGLES;
+            var offset = 0;
+            var count = 16 * 6;
+            gl.drawArrays(primitiveType,offset,count);
+        }
+    }
+
+function setColor(gl) {
+  gl.bufferData(
+    gl.ARRAY_BUFFER,
+    new Uint8Array([
+          // left column front
+        200,  70, 120,
+        200,  70, 120,
+        200,  70, 120,
+        200,  70, 120,
+        200,  70, 120,
+        200,  70, 120,
+
+          // top rung front
+        200,  70, 120,
+        200,  70, 120,
+        200,  70, 120,
+        200,  70, 120,
+        200,  70, 120,
+        200,  70, 120,
+
+          // middle rung front
+        200,  70, 120,
+        200,  70, 120,
+        200,  70, 120,
+        200,  70, 120,
+        200,  70, 120,
+        200,  70, 120,
+
+          // left column back
+        80, 70, 200,
+        80, 70, 200,
+        80, 70, 200,
+        80, 70, 200,
+        80, 70, 200,
+        80, 70, 200,
+
+          // top rung back
+        80, 70, 200,
+        80, 70, 200,
+        80, 70, 200,
+        80, 70, 200,
+        80, 70, 200,
+        80, 70, 200,
+
+          // middle rung back
+        80, 70, 200,
+        80, 70, 200,
+        80, 70, 200,
+        80, 70, 200,
+        80, 70, 200,
+        80, 70, 200,
+
+          // top
+        70, 200, 210,
+        70, 200, 210,
+        70, 200, 210,
+        70, 200, 210,
+        70, 200, 210,
+        70, 200, 210,
+
+          // top rung right
+        200, 200, 70,
+        200, 200, 70,
+        200, 200, 70,
+        200, 200, 70,
+        200, 200, 70,
+        200, 200, 70,
+
+          // under top rung
+        210, 100, 70,
+        210, 100, 70,
+        210, 100, 70,
+        210, 100, 70,
+        210, 100, 70,
+        210, 100, 70,
+
+          // between top rung and middle
+        210, 160, 70,
+        210, 160, 70,
+        210, 160, 70,
+        210, 160, 70,
+        210, 160, 70,
+        210, 160, 70,
+
+          // top of middle rung
+        70, 180, 210,
+        70, 180, 210,
+        70, 180, 210,
+        70, 180, 210,
+        70, 180, 210,
+        70, 180, 210,
+
+          // right of middle rung
+        100, 70, 210,
+        100, 70, 210,
+        100, 70, 210,
+        100, 70, 210,
+        100, 70, 210,
+        100, 70, 210,
+
+          // bottom of middle rung.
+        76, 210, 100,
+        76, 210, 100,
+        76, 210, 100,
+        76, 210, 100,
+        76, 210, 100,
+        76, 210, 100,
+
+          // right of bottom
+        140, 210, 80,
+        140, 210, 80,
+        140, 210, 80,
+        140, 210, 80,
+        140, 210, 80,
+        140, 210, 80,
+
+          // bottom
+        90, 130, 110,
+        90, 130, 110,
+        90, 130, 110,
+        90, 130, 110,
+        90, 130, 110,
+        90, 130, 110,
+
+          // left side
+        160, 160, 220,
+        160, 160, 220,
+        160, 160, 220,
+        160, 160, 220,
+        160, 160, 220,
+        160, 160, 220]),
+
+      gl.STATIC_DRAW,
+    );
+}
+
+// Fill the buffer with the values that define a letter 'F'.
+function setGeometry(gl) {
+  gl.bufferData(
+      gl.ARRAY_BUFFER,
+      new Float32Array([
+          // left column front
+          0,   0,  0,
+          0, 150,  0,
+          30,   0,  0,
+          0, 150,  0,
+          30, 150,  0,
+          30,   0,  0,
+
+          // top rung front
+          30,   0,  0,
+          30,  30,  0,
+          100,   0,  0,
+          30,  30,  0,
+          100,  30,  0,
+          100,   0,  0,
+
+          // middle rung front
+          30,  60,  0,
+          30,  90,  0,
+          67,  60,  0,
+          30,  90,  0,
+          67,  90,  0,
+          67,  60,  0,
+
+          // left column back
+            0,   0,  30,
+           30,   0,  30,
+            0, 150,  30,
+            0, 150,  30,
+           30,   0,  30,
+           30, 150,  30,
+
+          // top rung back
+           30,   0,  30,
+          100,   0,  30,
+           30,  30,  30,
+           30,  30,  30,
+          100,   0,  30,
+          100,  30,  30,
+
+          // middle rung back
+           30,  60,  30,
+           67,  60,  30,
+           30,  90,  30,
+           30,  90,  30,
+           67,  60,  30,
+           67,  90,  30,
+
+          // top
+            0,   0,   0,
+          100,   0,   0,
+          100,   0,  30,
+            0,   0,   0,
+          100,   0,  30,
+            0,   0,  30,
+
+          // top rung right
+          100,   0,   0,
+          100,  30,   0,
+          100,  30,  30,
+          100,   0,   0,
+          100,  30,  30,
+          100,   0,  30,
+
+          // under top rung
+          30,   30,   0,
+          30,   30,  30,
+          100,  30,  30,
+          30,   30,   0,
+          100,  30,  30,
+          100,  30,   0,
+
+          // between top rung and middle
+          30,   30,   0,
+          30,   60,  30,
+          30,   30,  30,
+          30,   30,   0,
+          30,   60,   0,
+          30,   60,  30,
+
+          // top of middle rung
+          30,   60,   0,
+          67,   60,  30,
+          30,   60,  30,
+          30,   60,   0,
+          67,   60,   0,
+          67,   60,  30,
+
+          // right of middle rung
+          67,   60,   0,
+          67,   90,  30,
+          67,   60,  30,
+          67,   60,   0,
+          67,   90,   0,
+          67,   90,  30,
+
+          // bottom of middle rung.
+          30,   90,   0,
+          30,   90,  30,
+          67,   90,  30,
+          30,   90,   0,
+          67,   90,  30,
+          67,   90,   0,
+
+          // right of bottom
+          30,   90,   0,
+          30,  150,  30,
+          30,   90,  30,
+          30,   90,   0,
+          30,  150,   0,
+          30,  150,  30,
+
+          // bottom
+          0,   150,   0,
+          0,   150,  30,
+          30,  150,  30,
+          0,   150,   0,
+          30,  150,  30,
+          30,  150,   0,
+
+          // left side
+          0,   0,   0,
+          0,   0,  30,
+          0, 150,  30,
+          0,   0,   0,
+          0, 150,  30,
+          0, 150,   0]),
+      gl.STATIC_DRAW);
+  }
+
+    main();
+
+</script>
+

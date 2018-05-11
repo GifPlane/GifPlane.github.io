@@ -1,0 +1,183 @@
+<link rel="stylesheet" type="text/css" href="css/webgl01-trangle.css">
+<canvas id="canvas"></canvas>
+<div id="uiContainer">
+  <div id="ui">
+    <div id="x"></div>
+    <div id="y"></div>
+    <div id="angle"></div>
+    <div id="scaleX"></div>
+    <div id="scaleY"></div>
+  </div>
+</div>
+<!-- vertex shader -->
+<script id="2d-vertex-shader" type="x-shader/x-vertex">
+	attribute vec2 a_position;
+
+	uniform vec2 u_resolution;
+	uniform mat3 u_matrix;
+
+	void main() {
+	  // Multiply the position by the matrix.
+	  vec2 position = (u_matrix * vec3(a_position, 1)).xy;
+
+	  // convert the position from pixels to 0.0 to 1.0
+	  vec2 zeroToOne = position / u_resolution;
+
+	  // convert from 0->1 to 0->2
+	  vec2 zeroToTwo = zeroToOne * 2.0;
+
+	  // convert from 0->2 to -1->+1 (clipspace)
+	  vec2 clipSpace = zeroToTwo - 1.0;
+
+	  gl_Position = vec4(clipSpace * vec2(1, -1), 0, 1);
+	}
+</script>
+<!-- fragment shader -->
+<script id="2d-fragment-shader" type="x-shader/x-fragment">
+	precision mediump float;
+
+	uniform vec4 u_color;
+
+	void main() {
+	   gl_FragColor = u_color;
+	}
+</script>
+<script src="resources/webgl-utils.js"></script>
+<script src="resources/m3.js"></script>
+<script src="js/shader.js"></script>
+<script src="js/webglUtils-uiMy.js"></script>
+<script src="resources/webgl-lessons-helper.js"></script>
+<script src="https://webglfundamentals.org/webgl/resources/jquery-1.7.1.min.js"></script>
+<script type="text/javascript">
+	"use strict";
+
+	function main(){
+		var canvas = document.getElementById("canvas");
+		var gl = canvas.getContext("webgl");
+		if(!gl) return;
+
+		var program = shaderUtils.createProgramFromScripts(gl, ["2d-vertex-shader", "2d-fragment-shader"]);
+
+		var positionLocation = gl.getAttribLocation(program, "a_position");
+		var resolutionLocation = gl.getUniformLocation(program, "u_resolution");
+		var colorLocation = gl.getUniformLocation(program, "u_color");
+		var matrixLocation = gl.getUniformLocation(program, "u_matrix");
+
+		var positionBuffer = gl.createBuffer();
+		gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+
+		setGeometry(gl);
+
+		var translation = [100,150];
+		var angleInRadians = 0;
+		var scale = [1,1];
+		var color = [Math.random(), Math.random(), Math.random(), 1];
+
+		drawScene();
+
+		webglUtilsUI.setupSlider("#x", {value: translation[0], slide: updatePosition(0), max: gl.canvas.width });
+		webglUtilsUI.setupSlider("#y", {value: translation[1], slide: updatePosition(0), max: gl.canvas.height });
+		webglUtilsUI.setupSlider("#angle", {slide: updateAngle, max: 360});
+  		webglUtilsUI.setupSlider("#scaleX", {value: scale[0], slide: updateScale(0), min: -5, max: 5, step: 0.01, precision: 2});
+  		webglUtilsUI.setupSlider("#scaleY", {value: scale[1], slide: updateScale(1), min: -5, max: 5, step: 0.01, precision: 2});
+
+  		function updatePosition(index) {
+		    return function(event, ui) {
+		      translation[index] = ui.value;
+		      drawScene();
+		    }
+	  	}
+
+		function updateAngle(event, ui) {
+		    var angleInDegrees = 360 - ui.value;
+		    angleInRadians = angleInDegrees * Math.PI / 180;
+		    drawScene();
+	  	}
+
+		function updateScale(index) {
+		    return function(event, ui) {
+		      scale[index] = ui.value;
+		      drawScene();
+		    }
+	  	}
+
+		function drawScene(){
+			webglUtils.resizeCanvasToDisplaySize(gl.canvas);
+
+			gl.viewport(0,0,gl.canvas.width, gl.canvas.height);
+
+			gl.clear(gl.COLOR_BUFFER_BIT);
+
+			gl.useProgram(program);
+
+			gl.enableVertexAttribArray(positionLocation);
+
+			gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+
+			// Tell the attribute how to get data out of positionBuffer (ARRAY_BUFFER)
+		    var size = 2;          // 2 components per iteration
+		    var type = gl.FLOAT;   // the data is 32bit floats
+		    var normalize = false; // don't normalize the data
+		    var stride = 0;        // 0 = move forward size * sizeof(type) each iteration to get the next position
+		    var offset = 0;        // start at the beginning of the buffer
+		    gl.vertexAttribPointer(
+		        positionLocation, size, type, normalize, stride, offset);
+			
+		    gl.uniform2f(resolutionLocation, gl.canvas.width, gl.canvas.height);
+
+		    gl.uniform4fv(colorLocation, color);
+
+			var translationMatrix = m3.translation(translation[0],translation[1]);
+			var rotationMatrix = m3.rotation(angleInRadians);
+			var scaleMatrix = m3.scaling(scale[0],scale[1]);
+
+			var matrix = m3.identity();
+
+			for(var i=0;i<5;++i){
+				matrix = m3.multiply(matrix, translationMatrix);
+				matrix = m3.multiply(matrix, rotationMatrix);
+				matrix = m3.multiply(matrix, scaleMatrix);
+
+				gl.uniformMatrix3fv(matrixLocation, false, matrix);
+
+				gl.drawArrays(gl.TRIANGLES, 0, 18);
+
+			}
+		}
+
+	}
+
+	function setGeometry(gl) {
+		gl.bufferData(
+		  gl.ARRAY_BUFFER,
+		  new Float32Array([
+		      // left column
+		      0, 0,
+		      30, 0,
+		      0, 150,
+		      0, 150,
+		      30, 0,
+		      30, 150,
+
+		      // top rung
+		      30, 0,
+		      100, 0,
+		      30, 30,
+		      30, 30,
+		      100, 0,
+		      100, 30,
+
+		      // middle rung
+		      30, 60,
+		      67, 60,
+		      30, 90,
+		      30, 90,
+		      67, 60,
+		      67, 90,
+		  ]),
+		  gl.STATIC_DRAW);
+	}
+
+	main();
+
+</script>

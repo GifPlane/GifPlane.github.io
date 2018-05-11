@@ -1,0 +1,6 @@
+#ignore this file#
+*.opensdf
+/MyLeetCode/Debug/
+/MyLeetCode/MyLeetCode/Debug/
+/algorithm/Debug/
+/algorithm/algorithm/Debug/

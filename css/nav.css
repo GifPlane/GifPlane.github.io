@@ -1,0 +1,24 @@
+.bd-navbar {
+    min-height: 4rem;
+    background-color: #464646;
+    box-shadow: 0 0.5rem 1rem rgba(0,0,0,.05), inset 0 -1px 0 rgba(0,0,0,.1);
+}
+.navbar-brand {
+    display: inline-block;
+    padding-top: .3125rem;
+    padding-bottom: .3125rem;
+    margin-right: 1rem;
+    font-size: 1.25rem;
+    line-height: inherit;
+    white-space: nowrap;
+}
+.bd-navbar .navbar-nav .nav-link {
+    padding-right: .5rem;
+    padding-left: .5rem;
+    color: #ffffff;
+    font-size: 20px;
+}
+.nav-link {
+    display: block;
+    padding: .5rem 1rem;
+}

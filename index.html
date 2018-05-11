@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Free Bootstrap Themes by Html5xCss3 dot com - Free Responsive Html5 Templates">
+    <meta name="author" content="#">
+	
+    <title>GifPlane</title>
+	
+    <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css">
+	
+	<link href="css/style.css" rel="stylesheet">
+	
+    <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+	
+    <link href="owl-carousel/owl.carousel.css" rel="stylesheet">
+
+</head>
+<body class="index-page">
+	<div class="wrap-body">
+		
+		<div id="page-content" class="container-fluid">
+			<div class="wrap-content">
+				
+				<div class="col-lg-6">
+					<section class="box-content box-header">
+						<div class="header-text">
+							<div class="logo visible-xs text-center">
+								<a href="index.html"><img src="images/logo-dark.png" class="img-responsive" alt=""></a>
+							</div>
+							<div class="header-text-inner">
+								<h1>GifPlane<br> Game and CS</h1>
+							</div>
+						</div>
+					</section>
+				</div>
+				
+				<div class="col-lg-6">
+					<section class="box-content box-1 box-style-0">
+						<div class="no-gutter">
+							<div class="col-xs-4 social-box box-facebook">
+								<a class="" href="./webGLTest/webGLList.html">
+									<div class="social-box-inner">
+										<div class="social-box-inner-content">
+											<p>WebGLTest</p>
+										</div>
+									</div>
+								</a>
+							</div>
+							<div class="col-xs-4 social-box box-twitter">
+								<a class="">
+									<div class="social-box-inner">
+										<div class="social-box-inner-content">
+											<p>Algorithm</p>
+										</div>
+									</div>
+								</a>
+							</div>
+							<div class="col-xs-4 social-box box-pinterest">
+								<a class="" href="/game/gamelist.html">
+									<div class="social-box-inner">
+										<div class="social-box-inner-content">
+											<p>Game</p>
+										</div>
+									</div>
+								</a>
+							</div>
+							<div class="col-xs-4 social-box box-google">
+								<a class="">
+									<div class="social-box-inner">
+										<div class="social-box-inner-content">
+											<p>ComputerSystem</p>
+										</div>
+									</div>
+								</a>
+							</div>
+							<div class="col-xs-4 social-box box-instagram">
+								<a class="" href="/demo/demolist.html">
+									<div class="social-box-inner">
+										<div class="social-box-inner-content">
+											<p>UnityDemo</p>
+										</div>
+									</div>
+								</a>
+							</div>
+							<div class="col-xs-4 social-box box-pinterest">
+								<a class="">
+									<div class="social-box-inner">
+										<div class="social-box-inner-content">
+											<p>...</p>
+										</div>
+									</div>
+								</a>
+							</div>
+						</div>
+					</section>
+				</div>
+			</div>
+		</div><!-- End Content -->
+		
+		<footer id="page-footer" class="">
+			<div class="bottom-footer">
+				<div class="container-fluid">
+					<div class="">
+						<div class="col-md-6">
+							<p>注：网站仅为学习和测试用。</p>
+							<p>Copyright 2018 - SeaHandSome <a href="https://coding.net/u/SeaHandSome" target="_blank" title="算法">GIFPLANE</a></p>
+							<p>GitHub <a href="https://github.com/GifPlane" target="_blank">GIFPLANE</a></p>
+							<p>Hosted by <a href="https://pages.coding.me" style="font-weight: bold">Coding Pages</a></p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</footer><!-- Footer -->
+
+	</div><!-- .wrap-body -->
+	
+	<!-- jQuery and Plugin-->
+	<script src="js/jquery-3.2.1.min.js"></script>
+	<script src="js/main.js"></script>
+	<!-- Bootstrap JS -->
+	<script src="js/bootstrap.min.js"></script>
+	
+	<!-- Logo -->
+	<!-- carousel -->
+	<script src="owl-carousel/owl.carousel.js"></script>
+    <script>
+		$(document).ready(function() {
+		  var b2_box = $("#owl-slide");
+		  
+		  b2_box.owlCarousel({
+			autoPlay: false,
+			items : 1,
+			itemsDesktop : [1199,1],
+			itemsDesktopSmall : [979,1],
+			itemsTablet : [768, 1],
+			itemsMobile : [479, 1],
+			pagination: false
+		  });
+		  
+		  // Custom Navigation Events 1
+		  $(".next-b_2-slide").click(function(){
+			b2_box.trigger('owl.next');
+		  });
+		  $(".prev-b_2-slide").click(function(){
+			b2_box.trigger('owl.prev');
+		  });
+		  
+		});
+	</script>
+	
+	<script type="text/javascript" src="js/validator.min.js"></script>
+	<script type="text/javascript" src="js/form-scripts.js"></script>
+	
+</body>
+</html>
