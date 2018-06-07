@@ -9,6 +9,7 @@ var Colors = {
     blue:0x68c3c0,
 };
 
+//环境颜色
 var amibentColor = {
   level1:0xEEC211,
   level2:0x22B8DD,
@@ -28,6 +29,7 @@ var ennemiesPool = [];
 var particlesPool = [];
 var particlesInUse = [];
 
+//重置游戏
 function resetGame(){
   game = {speed:0,
           initSpeed:.00035,
@@ -93,7 +95,12 @@ function resetGame(){
   fieldLevel.innerHTML = Math.floor(game.level);
 }
 
-//THREEJS 相关的变量
+/*
+  THREEJS 相关的变量
+  1、相机（透视视图：包含）
+  2、场景
+  3、
+*/
 var scene,
     camera, fieldOfView, aspectRatio, nearPlane, farPlane,
     renderer,
@@ -115,12 +122,15 @@ function createScene() {
   fieldOfView = 50;
   nearPlane = .1;
   farPlane = 10000;
+
+  //透视相机
   camera = new THREE.PerspectiveCamera(
-    fieldOfView,
-    aspectRatio,
-    nearPlane,
-    farPlane
+    fieldOfView,//视角
+    aspectRatio,//屏幕纵横比
+    nearPlane,//近平面
+    farPlane//远平面
     );
+
   scene.fog = new THREE.Fog(0xf7d9aa, 100,950); //定义场景的雾
   camera.position.x = 0;
   camera.position.z = 200;
@@ -744,7 +754,7 @@ ParticlesHolder = function (){
   this.particlesInUse = [];
 }
 
-//例子控制-产生粒子
+//粒子控制-产生粒子
 ParticlesHolder.prototype.spawnParticles = function(pos, density, color, scale){
 
   var nPArticles = density;
