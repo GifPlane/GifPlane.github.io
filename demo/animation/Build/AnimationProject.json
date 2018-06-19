@@ -1,0 +1,13 @@
+{
+"companyName": "DefaultCompany",
+"productName": "AnimationProject",
+"dataUrl": "AnimationProject.data.unityweb",
+"asmCodeUrl": "AnimationProject.asm.code.unityweb",
+"asmMemoryUrl": "AnimationProject.asm.memory.unityweb",
+"asmFrameworkUrl": "AnimationProject.asm.framework.unityweb",
+"TOTAL_MEMORY": 805306368,
+"graphicsAPI": ["WebGL 2.0", "WebGL 1.0"],
+"webglContextAttributes": {"preserveDrawingBuffer": false},
+"splashScreenStyle": "Dark",
+"backgroundColor": "#231F20"
+}
