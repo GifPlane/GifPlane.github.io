@@ -1,43 +1,107 @@
-<html>
-	<head>
-		<meta charset="UTF-8" />
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<title>GifPlane|Study Game By ThreeJs</title>
-		<link rel="stylesheet" type="text/css" href="css/demo.css" />
-		<link rel="stylesheet" type="text/css" href="css/game.css" />
-		<script type="text/javascript" src="js/TweenMax.min.js"></script>
-		<script type="text/javascript" src="js/three.min.js"></script>
-		<script type="text/javascript" src="js/game.js" /></script>
-		<style>body{font-family: "microsoft yahei";}</style>
-	</head>
-	<body>
-		<div class="game-holder" id="gameHolder">
-			<div class="header">
-				<div class="score" id="score">
-					<div class="score__content" id="level">
-						<div class="score__label">等级</div>
-						<div class="score__value score__value--level" id="levelValue">1</div>
-						<svg class="level-circle" id="levelCircle" viewbox="0 0 200 200">
-							<circle id="levelCircleBgr" r="80" cx="100" cy="100" fill="none" stroke="#d1b790" stroke-width="24px" />
-							<circle id="levelCircleStroke" r="80" cx="100" cy="100" fill="none" #f25346 stroke="#68c3c0" stroke-width="14px" stroke-dasharray="502" />
-						</svg>
-					</div>
-					<div class="score__content" id="dist">
-						<div class="score__label">距离</div>
-						<div class="score__value score__value--dist" id="distValue">000</div>
-					</div>
-					<div class="score__content" id="energy">
-						<div class="score__label">能量</div>
-						<div class="score__value score__value--energy" id="energyValue">
-							<div class="energy-bar" id="energyBar"></div>
-						</div>
-					</div>
-				</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Free Bootstrap Themes by Html5xCss3 dot com - Free Responsive Html5 Templates">
+    <meta name="author" content="#">
+    
+    <title>GifPlane</title>
+    
+    <link href="../../css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    
+    <link href="../../css/style.css" rel="stylesheet">
+    
+    <link href="../../font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    
+    <link href="../../owl-carousel/owl.carousel.css" rel="stylesheet">
 
-			</div>
-			<div class="world" id="world"></div>
-			<div class="message message--replay" id="replayMessage">点击屏幕开始</div>
-		</div>
-	</body>
+</head>
+<body class="index-page">
+    <div class="wrap-body">
+        <div id="page-content" class="container-fluid">
+            <div class="wrap-content">
+                <div class="col-lg-4">
+                    <section class="box-content box-header">
+                        <div class="header-text">
+                            <div class="logo visible-xs text-center">
+                                <a href="index.html"><img src="../../images/logo-dark.png" class="img-responsive" alt=""></a>
+                            </div>
+                            <div class="header-text-inner">
+                                <h1>GifPlane<br> Game </h1>
+                            </div>
+                        </div>
+                    </section>
+                </div>               
+                <div class="col-lg-8">
+                    <section class="box-content box-1 box-style-0">
+                        <div class="no-gutter">
+                            <div class="col-xs-4 social-box box-facebook">
+                                <a class="" href="plane/index.html">
+                                    <div class="social-box-inner">
+                                        <div class="social-box-inner-content">
+                                            <p>飞机漫游</p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div><!-- End Content -->
+        
+        <footer id="page-footer" class="">
+            <div class="bottom-footer">
+                <div class="container-fluid">
+                    <div class="">
+                        <div class="col-md-6">
+                            <p>注：网站仅为学习和测试用。</p>
+                            <p>GitHub <a href="https://github.com/GifPlane" target="_blank">GIFPLANE</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+    </div><!-- .wrap-body -->
+        
+    <!-- jQuery and Plugin-->
+    <script src="../../js/jquery-3.2.1.min.js"></script>
+    <script src="../../js/main.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="../../js/bootstrap.min.js"></script>
+    
+    <!-- Logo -->
+    <!-- carousel -->
+    <script src="../../owl-carousel/owl.carousel.js"></script>
+    <script>
+        $(document).ready(function() {
+          var b2_box = $("#owl-slide");
+          
+          b2_box.owlCarousel({
+            autoPlay: false,
+            items : 1,
+            itemsDesktop : [1199,1],
+            itemsDesktopSmall : [979,1],
+            itemsTablet : [768, 1],
+            itemsMobile : [479, 1],
+            pagination: false
+          });
+          
+          // Custom Navigation Events 1
+          $(".next-b_2-slide").click(function(){
+            b2_box.trigger('owl.next');
+          });
+          $(".prev-b_2-slide").click(function(){
+            b2_box.trigger('owl.prev');
+          });
+          
+        });
+    </script>
+    
+    <script type="text/javascript" src="../../js/validator.min.js"></script>
+    <script type="text/javascript" src="../../js/form-scripts.js"></script>
+</body>
 </html>
